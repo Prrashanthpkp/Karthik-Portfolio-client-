@@ -1,3 +1,4 @@
+import "../styles/skills.css";
 import Section from "./Section";
 
 const toolIcons = [
@@ -59,126 +60,9 @@ const toolIcons = [
   },
 ];
 
-const marqueeItems = [toolIcons, toolIcons];
-
-const marqueeStyle = `
-  .marquee-section {
-    margin-top: 5rem;
-    overflow: hidden;
-    padding: 2.5rem 0;
-    border-top: 1px solid #1c1c1c;
-    border-bottom: 1px solid #1c1c1c;
-    position: relative;
-    white-space: nowrap;
-  }
-  .marquee-section::before,
-  .marquee-section::after {
-    content: '';
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 120px;
-    z-index: 2;
-    pointer-events: none;
-  }
-  .marquee-section::before { left: 0; background: linear-gradient(to right, #080808, transparent); }
-  .marquee-section::after  { right: 0; background: linear-gradient(to left, #080808, transparent); }
-  .marquee-label {
-    font-size: .6rem;
-    letter-spacing: .22em;
-    text-transform: uppercase;
-    color: #C0392B;
-    text-align: center;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: .8rem;
-  }
-  .marquee-label::before,
-  .marquee-label::after {
-    content: '';
-    display: block;
-    width: 40px;
-    height: 1px;
-    background: #C0392B;
-  }
-  .marquee-track {
-  display: flex;
-  width: max-content;
-  animation: marqueeScroll 20s linear infinite;
-}
-
-@keyframes marqueeScroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-  .marquee-track:hover { animation-play-state: paused; }
-    .marquee-group {
-  display: flex;
-  flex-shrink: 0;
-}
-  .marquee-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: .6rem;
-    padding: 0 2.8rem;
-    cursor: default;
-    transition: all .2s;
-    border-right: 1px solid #1c1c1c;
-    min-width: 130px;
-  }
-  .marquee-item:hover .m-icon { color: #C0392B; transform: scale(1.15); }
-  .marquee-item:hover .m-name { color: #F0EDE6; }
-  .m-icon {
-    width: 32px; height: 32px;
-    color: #444;
-    transition: color .2s, transform .2s;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .m-icon svg { width: 100%; height: 100%; }
-  .m-name {
-    font-size: .58rem;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    color: #444;
-    white-space: nowrap;
-    transition: color .2s;
-    font-family: 'DM Mono', monospace;
-  }
-  .about-block {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-  .about-tag-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .5rem;
-    margin-top: .5rem;
-  }
-  .about-tag {
-    border: 1px solid #1c1c1c;
-    padding: .28rem .75rem;
-    font-size: .6rem;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: #C0392B;
-    font-family: 'DM Mono', monospace;
-  }
-`;
-
-// FIX: Removed duplicate useRef and useInView — Section handles its own visibility
 export default function SkillsSection() {
   return (
     <Section id="skills" label="01 — Craft" title="Skills &" accent="Education" countLabel="S">
-      <style>{marqueeStyle}</style>
-
       <div className="skills-wrap">
         {/* LEFT: About */}
         <div className="about-block">
@@ -232,20 +116,27 @@ export default function SkillsSection() {
         </div>
       </div>
 
-      {/* MARQUEE STRIP */}
+      {/* MARQUEE STRIP — two identical groups; second is aria-hidden
+          so screen readers don't read the tools twice */}
       <div className="marquee-section">
         <div className="marquee-label">Tools & Software</div>
         <div className="marquee-track">
-          {marqueeItems.map((group, gi) => (
-            <div className="marquee-group" key={gi}>
-              {group.map((item, i) => (
-                <div key={i} className="marquee-item">
-                  <div className="m-icon">{item.svg}</div>
-                  <span className="m-name">{item.name}</span>
-                </div>
-              ))}
-            </div>
-          ))}
+          <div className="marquee-group">
+            {toolIcons.map((item, i) => (
+              <div key={i} className="marquee-item">
+                <div className="m-icon">{item.svg}</div>
+                <span className="m-name">{item.name}</span>
+              </div>
+            ))}
+          </div>
+          <div className="marquee-group" aria-hidden="true">
+            {toolIcons.map((item, i) => (
+              <div key={i} className="marquee-item">
+                <div className="m-icon">{item.svg}</div>
+                <span className="m-name">{item.name}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </Section>

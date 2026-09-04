@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";
 import Section from "./Section";
 
 import cow1 from "../assets/projects/court-of-words/game1-pic1.png";
@@ -19,6 +20,15 @@ import nmr4 from "../assets/projects/no-more-rooms/game4-pic4.jpeg";
 const projects = [
   {
     num: "01", total: "04",
+    name: "Colour Blind",
+    shortDesc: "A 3D narrative-driven puzzle game where you recollect forgotten memories inside a faded classroom to bring colour back to a teenager's world.",
+    genre: "Narrative / Puzzle", tools: "Unity", engine: "Unity", role: "Level & Narrative Designer", year: "2024",
+    route: "/projects/colour-blind",
+    fullDesc: [],
+    images: [],
+  },
+  {
+    num: "02", total: "04",
     name: "The Court of Words",
     shortDesc: "A 3-player strategy board game where poetry becomes power — set in a royal court inspired by the Sangam period.",
     genre: "Strategy / Board Game", tools: "Unity", engine: "Unity", role: "Game Designer", year: "2024",
@@ -29,19 +39,6 @@ const projects = [
       "The design explores how language can be weaponised within social systems — drawing from Sangam-era poetic traditions (Akam and Puram) to create a mechanic where literary craft doubles as strategic deception.",
     ],
     images: [cow1, cow2],
-  },
-  {
-    num: "02", total: "04",
-    name: "Monochrome",
-    shortDesc: "A 3D narrative game where you recollect forgotten memories inside a faded classroom to bring colour back to a teenager's world.",
-    genre: "Narrative / Exploration", tools: "Unity", engine: "Unity", role: "Level & Narrative Designer", year: "2024",
-    fullDesc: [
-      "Monochrome is a 3D narrative-based game where you play as a student whose world has faded to grey under the weight of growing up. The colour has drained from everything — and the only way to bring it back is to remember.",
-      "Set entirely within a single classroom, players explore and interact with everyday objects — a pencil case, a torn notebook, a window seat — each tied to a forgotten memory from the main character's past. Every object recollected restores a fragment of colour to the world.",
-      "The level is designed as a carefully layered emotional map — each area of the classroom corresponds to a different chapter of the protagonist's inner life. Affordances guide the player naturally through the space without explicit direction, letting discovery drive the narrative.",
-      "Monochrome is an exploration of environmental storytelling at its most intimate — where the level itself is the story, and the act of looking closely is the core mechanic.",
-    ],
-    images: [],
   },
   {
     num: "03", total: "04",
@@ -161,11 +158,21 @@ function ProjectCard({ project, onExpand }) {
 
 export default function ProjectsSection() {
   const [active, setActive] = useState(null);
+  const navigate = useNavigate();
+
+  const handleExpand = (p) => {
+    if (p.route) {
+      navigate(p.route);
+    } else {
+      setActive(p);
+    }
+  };
+
   return (
     <Section id="projects" label="02 — Work" title="Selected" accent="Projects" countLabel="P">
       <div className="projects-list-new">
         {projects.map((p) => (
-          <ProjectCard key={p.num} project={p} onExpand={() => setActive(p)} />
+          <ProjectCard key={p.num} project={p} onExpand={() => handleExpand(p)} />
         ))}
       </div>
       {active && <ProjectModal project={active} onClose={() => setActive(null)} />}
