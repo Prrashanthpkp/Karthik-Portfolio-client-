@@ -17,18 +17,23 @@ import nmr2 from "../assets/projects/no-more-rooms/game4-pic2.jpeg";
 import nmr3 from "../assets/projects/no-more-rooms/game4-pic3.jpeg";
 import nmr4 from "../assets/projects/no-more-rooms/game4-pic4.jpeg";
 
-const projects = [
+/* Order here = order on the page. Numbers (01 / 05 …) are worked out
+   automatically, so reordering never needs manual renumbering.
+   Projects with a `route` open their own page; the rest open the modal. */
+const projectList = [
   {
-    num: "01", total: "04",
-    name: "Colour Blind",
-    shortDesc: "A 3D narrative-driven puzzle game where you recollect forgotten memories inside a faded classroom to bring colour back to a teenager's world.",
-    genre: "Narrative / Puzzle", tools: "Unity", engine: "Unity", role: "Level & Narrative Designer", year: "2024",
-    route: "/projects/colour-blind",
-    fullDesc: [],
-    images: [],
+    name: "One of All",
+    shortDesc: "A narrative-driven traversal and combat level set in the Western Ghats of India — built solo in Unreal Engine 5 over thirteen weeks.",
+    genre: "Action-Adventure / Level Design", tools: "Unreal Engine 5",
+    route: "/projects/one-of-all",
   },
   {
-    num: "02", total: "04",
+    name: "Colour Blind",
+    shortDesc: "A 3D narrative-driven puzzle game where you recollect forgotten memories inside a faded classroom to bring colour back to a teenager's world.",
+    genre: "Narrative / Puzzle", tools: "Unity",
+    route: "/projects/colour-blind",
+  },
+  {
     name: "The Court of Words",
     shortDesc: "A 3-player strategy board game where poetry becomes power — set in a royal court inspired by the Sangam period.",
     genre: "Strategy / Board Game", tools: "Unity", engine: "Unity", role: "Game Designer", year: "2024",
@@ -41,7 +46,6 @@ const projects = [
     images: [cow1, cow2],
   },
   {
-    num: "03", total: "04",
     name: "Hope",
     shortDesc: "A narrative stealth prototype built in Twine — exploring the illusion of choice through branching paths, laser grids, and pattern locks.",
     genre: "Narrative / Stealth Prototype", tools: "Twine (Harlowe)", engine: "Twine", role: "Narrative & Gameplay Designer", year: "2024",
@@ -54,7 +58,6 @@ const projects = [
     images: [hope1, hope2, hope3, hope4, hope5],
   },
   {
-    num: "04", total: "04",
     name: "No More Rooms",
     shortDesc: "A 2D point-and-click escape room built in GameMaker — transforming a single confined space into a layered puzzle environment.",
     genre: "Puzzle / Escape Room", tools: "GameMaker", engine: "GameMaker", role: "Level & Interaction Designer", year: "2024",
@@ -68,7 +71,14 @@ const projects = [
   },
 ];
 
-function Gallery({ images }) {
+const pad = (n) => String(n).padStart(2, "0");
+const projects = projectList.map((p, i) => ({
+  ...p,
+  num: pad(i + 1),
+  total: pad(projectList.length),
+}));
+
+function Gallery({ images = [] }) {
   if (images.length === 0) {
     return <div className="gallery-no-images">No images available yet</div>;
   }
@@ -77,7 +87,7 @@ function Gallery({ images }) {
       {images.map((src, i) =>
         src ? (
           <div key={i} className="gallery-img-slot">
-            <img src={src} alt={`screenshot ${i + 1}`} />
+            <img src={src} alt={`screenshot ${i + 1}`} loading="lazy" />
           </div>
         ) : (
           <div key={i} className="gallery-placeholder">
@@ -104,10 +114,16 @@ function ProjectModal({ project, onClose }) {
   }, [onClose]);
 
   return createPortal(
-    <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+    <div
+      className="modal-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-label={project.name}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
       <div className="modal-card">
         <div className="modal-close-bar">
-          <button className="modal-close" onClick={onClose}>✕ Close</button>
+          <button type="button" className="modal-close" onClick={onClose}>✕ Close</button>
         </div>
         <Gallery images={project.images} />
         <div className="modal-body">
@@ -147,7 +163,11 @@ function ProjectCard({ project, onExpand }) {
             <span className="genre-badge">{project.genre}</span>
             <span className="proj-tools-text">{project.tools}</span>
           </div>
-          <button className="expand-btn" onClick={(e) => { e.stopPropagation(); onExpand(); }}>
+          <button
+            type="button"
+            className="expand-btn"
+            onClick={(e) => { e.stopPropagation(); onExpand(); }}
+          >
             View Project ↗
           </button>
         </div>
@@ -161,18 +181,15 @@ export default function ProjectsSection() {
   const navigate = useNavigate();
 
   const handleExpand = (p) => {
-    if (p.route) {
-      navigate(p.route);
-    } else {
-      setActive(p);
-    }
+    if (p.route) navigate(p.route);
+    else setActive(p);
   };
 
   return (
     <Section id="projects" label="02 — Work" title="Selected" accent="Projects" countLabel="P">
       <div className="projects-list-new">
         {projects.map((p) => (
-          <ProjectCard key={p.num} project={p} onExpand={() => handleExpand(p)} />
+          <ProjectCard key={p.name} project={p} onExpand={() => handleExpand(p)} />
         ))}
       </div>
       {active && <ProjectModal project={active} onClose={() => setActive(null)} />}
